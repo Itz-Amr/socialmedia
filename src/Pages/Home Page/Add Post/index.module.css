@@ -1,0 +1,55 @@
+#container {
+  width: 100%;
+  border: 1px solid #f4f4f4;
+  background-color: #fff;
+  border-radius: 10px;
+
+  #publish {
+    border: 1px solid #f4f4f4;
+    padding: 10px;
+  }
+
+  h6 {
+    margin: 0;
+    color: #757a91;
+  }
+
+  #textArea {
+    position: relative;
+  }
+
+  .icon {
+    font-size: 20px;
+    color: #757a91;
+  }
+
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: absolute;
+    top: 50px;
+    left: 10px;
+  }
+
+  textarea {
+    width: 100%;
+    border: 1px solid #f4f4f4;
+    outline: 0;
+    padding: 3.5rem;
+  }
+
+  #btn {
+    padding: 10px;
+    background-color: #f7f7f7;
+    border: 0;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    color: #757a91;
+    font-weight: 600;
+  }
+
+  input {
+    display: none;
+  }
+}
