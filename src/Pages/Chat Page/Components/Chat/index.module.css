@@ -1,0 +1,76 @@
+#parnet {
+  header {
+    background-color: var(--white);
+    border: 1px solid #757a91;
+
+    img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    h5 {
+      margin: 0;
+    }
+  }
+
+  #chat {
+    width: 100%;
+    height: 1vh;
+    overflow: auto;
+    flex-grow: 1;
+  }
+
+  #msgs {
+    p {
+      font-weight: 600;
+      margin: 0;
+    }
+    .myMsg {
+      width: max-content;
+      margin-top: 1rem;
+      border-radius: 16px 16px 0 16px;
+      padding: 1rem;
+      background-color: var(--blue);
+      justify-self: flex-end;
+    }
+
+    .notMyMsg {
+      width: max-content;
+      color: #757a91;
+      margin-top: 1rem;
+      border-radius: 16px 16px 16px 0px;
+      padding: 1rem;
+      background-color: var(--white);
+      justify-self: flex-start;
+    }
+  }
+
+  #footer {
+    background-color: var(--white);
+
+    input {
+      width: 90%;
+      padding: 7px;
+      border-radius: 15px;
+      border: 0;
+      outline: 0;
+      transition: 300ms linear;
+
+      &:focus {
+        box-sizing: -1px 3px 10px 0 rgba(0, 0, 0, 0.06);
+        border-color: #e3e3e3;
+      }
+    }
+
+    #icons {
+      top: 10px;
+      left: 5px;
+    }
+
+    .icon {
+      font-size: 15px;
+      color: red;
+    }
+  }
+}

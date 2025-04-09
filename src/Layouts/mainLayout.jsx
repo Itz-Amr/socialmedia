@@ -1,6 +1,5 @@
-// import React from "react";
 import Header from "../Components/Header";
-import Home from "../Pages/Home Page";
+import Home from "../Pages/Home Page/UI";
 
 export default function MainLayout() {
   return (

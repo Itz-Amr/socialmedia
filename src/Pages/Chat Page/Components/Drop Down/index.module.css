@@ -1,0 +1,15 @@
+#dropDown {
+  #icon {
+    color: rgb(135, 138, 146);
+    font-size: 2rem;
+    cursor: pointer;
+  }
+
+  li {
+    a {
+      font-size: 10px;
+      color: black;
+      font-weight: 700;
+    }
+  }
+}

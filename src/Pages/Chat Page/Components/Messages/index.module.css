@@ -1,0 +1,25 @@
+#parnet {
+  width: 300px;
+  height: 100%;
+  background-color: var(--white);
+  border: 1px solid #757a91;
+
+  header {
+    padding-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: transparent;
+
+    h6 {
+      margin: 0;
+      font-weight: 700;
+    }
+  }
+
+  .chatContainer {
+    height: 1vh;
+    flex-grow: 1;
+    overflow: auto;
+  }
+}

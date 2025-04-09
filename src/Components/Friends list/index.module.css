@@ -1,0 +1,9 @@
+#parent {
+  background-color: #fff;
+  border: 1px solid #757a91;
+  border-radius: 10px;
+
+  #header {
+    border-bottom: 1px solid #757a91;
+  }
+}

@@ -1,5 +1,5 @@
 import styles from "./index.module.css";
-import user from "../../../assets/user.jpg";
+import user from "../../../../assets/user.jpg";
 import { CiShare2 } from "react-icons/ci";
 import { LiaCommentAlt, LiaHeart } from "react-icons/lia";
 export default function Posts() {

@@ -1,5 +1,5 @@
 import styles from "./index.module.css";
-import user from "../../../assets/user.jpg";
+import user from "../../../../assets/user.jpg";
 import { CiEdit, CiLocationOn } from "react-icons/ci";
 import { SlCamera } from "react-icons/sl";
 

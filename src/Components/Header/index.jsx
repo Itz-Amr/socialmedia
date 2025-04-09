@@ -17,7 +17,7 @@ export default function Header() {
       <div className="d-flex gap-3 align-items-center">
         <img src={logo} alt="" />
 
-        <Link className="position-relative">
+        <Link to={"/"} className="position-relative">
           <span className={styles.counter}>0</span>
           <LiaHomeSolid className={styles.homeIcon} />
         </Link>
@@ -27,7 +27,7 @@ export default function Header() {
           <LiaUserFriendsSolid className={styles.friendsIcon} />
         </Link>
 
-        <Link className="position-relative">
+        <Link to={"/chat"} className="position-relative">
           <span className={styles.counter}>0</span>
           <FiMessageSquare className={styles.msgIcon} />
         </Link>

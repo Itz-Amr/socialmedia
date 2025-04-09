@@ -1,8 +1,8 @@
-import AddPost from "./Add Post";
-import FriendsList from "./Friends list";
+import FriendsList from "../../../Components/Friends list";
+import AddPost from "../Components/Add Post";
+import Posts from "../Components/Posts";
+import Temperature from "../Components/Temperature";
 import styles from "./index.module.css";
-import Posts from "./Posts";
-import Temperature from "./Temperature";
 
 export default function Home() {
   return (

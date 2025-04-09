@@ -1,11 +1,11 @@
 #container {
   width: 100%;
-  border: 1px solid #f4f4f4;
+  border: 1px solid #757a91;
   background-color: #fff;
   border-radius: 10px;
 
   #publish {
-    border: 1px solid #f4f4f4;
+    border-bottom: 1px solid #757a91;
     padding: 10px;
   }
 
@@ -34,9 +34,10 @@
 
   textarea {
     width: 100%;
-    border: 1px solid #f4f4f4;
+    border: 0;
     outline: 0;
     padding: 3.5rem;
+    border-bottom: 1px solid #757a91;
   }
 
   #btn {
