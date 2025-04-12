@@ -27,7 +27,7 @@
       margin: 0;
     }
     .myMsg {
-      width: max-content;
+      color: #fff;
       margin-top: 1rem;
       border-radius: 16px 16px 0 16px;
       padding: 1rem;
@@ -35,8 +35,7 @@
       justify-self: flex-end;
     }
 
-    .notMyMsg {
-      width: max-content;
+    .otherMsg {
       color: #757a91;
       margin-top: 1rem;
       border-radius: 16px 16px 16px 0px;
@@ -49,9 +48,10 @@
   #footer {
     background-color: var(--white);
 
-    input {
-      width: 90%;
-      padding: 7px;
+    textArea {
+      resize: none;
+      flex-grow: 1;
+      padding: 1.5rem 0 0 2rem;
       border-radius: 15px;
       border: 0;
       outline: 0;
@@ -63,14 +63,23 @@
       }
     }
 
-    #icons {
-      top: 10px;
-      left: 5px;
+    .icon {
+      position: absolute;
+      font-size: 1.5rem;
+      top: 22px;
+      cursor: pointer;
+      left: 0;
     }
 
-    .icon {
-      font-size: 15px;
-      color: red;
+    button {
+      border: 0;
+      height: max-content;
+      transition: 300ms linear;
+      background-color: transparent;
+
+      &:hover {
+        color: var(--yellow);
+      }
     }
   }
 }

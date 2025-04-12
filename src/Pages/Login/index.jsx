@@ -10,7 +10,7 @@ export default function Login() {
   const [showPass, setShowPass] = useState(false);
 
   const validationSchema = Yup.object({
-    email: Yup.string().email("wrong email").required("email is required"),
+    email: Yup.string().email("invaled email").required("email is required"),
     password: Yup.string().required("password is required"),
   });
 

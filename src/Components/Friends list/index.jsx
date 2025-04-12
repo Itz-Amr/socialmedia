@@ -2,24 +2,31 @@ import { useEffect, useState } from "react";
 import FriendsChat from "../Friends Chat";
 import styles from "./index.module.css";
 import db from "../../FireBase";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { usersRepo } from "../../Data/Repos/users_repo";
 
 export default function FriendsList() {
-  const [users, setUsers] = useState([]);
+  const [chats, setChats] = useState([]);
 
-  const getUsersLive = () => {
-    onSnapshot(collection(db, "users"), (users) => {
-      let final = [];
-      users.forEach((el) => {
-        let userObj = { ...el.data(), documentId: el.id };
-        final.push(userObj);
-      });
-      setUsers(final);
-    });
+  const getChatLive = (userId) => {
+    onSnapshot(
+      query(collection(db, "chats"), where("users", "array-contains", userId)),
+      async (chats) => {
+        let final = [];
+        let promises = chats.docs.map(async (chat) => {
+          let chatObj = { ...chat.data(), documentId: chat.id };
+          let receiverId = chatObj.users.find((el) => el !== userId);
+          let userData = await usersRepo.getUserData(receiverId);
+          return { ...chatObj, name: userData.name };
+        });
+        final = await Promise.all(promises);
+        setChats(final);
+      }
+    );
   };
 
   useEffect(() => {
-    getUsersLive();
+    console.log(getChatLive("1"));
   }, []);
 
   return (
@@ -31,8 +38,13 @@ export default function FriendsList() {
         <h6>Friends</h6>
       </div>
       <div className="d-flex flex-column gap-3 overflow-auto">
-        {users.map((el) => (
-          <FriendsChat key={el.documentId} name={el.name} imgUrl={el.imgUrl} />
+        {chats.map((el) => (
+          <FriendsChat
+            key={el.documentId}
+            chatId={el.documentId}
+            name={el.name}
+            imgUrl={el.imgUrl}
+          />
         ))}
       </div>
     </div>

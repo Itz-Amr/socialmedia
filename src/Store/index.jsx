@@ -11,3 +11,8 @@ export const usePaths = create(() => ({
     { path: "/", icon: <LiaBellSolid /> },
   ],
 }));
+
+export const useChat = create((set) => ({
+  chat_id: 0,
+  setOpenedChat: (chat_id) => set(() => ({ chat_id })),
+}));
