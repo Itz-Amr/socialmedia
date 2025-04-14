@@ -15,6 +15,7 @@ import { RiAddLine } from "react-icons/ri";
 import { FaRegFaceSmile } from "react-icons/fa6";
 import EmojiPicker from "emoji-picker-react";
 import { usersRepo } from "../../../../Data/Repos/users_repo";
+import axios from "axios";
 
 export default function MessagesContent() {
   const [msgs, setMsgs] = useState([]);
@@ -73,12 +74,12 @@ export default function MessagesContent() {
     input.value = newText;
   };
 
-  useEffect(() => {
-    usersRepo.getAllUsers(chat_id).then((res) => {
-      setUsersData(res);
-      console.log(res);
-    });
-  }, [chat_id]);
+  // useEffect(() => {
+  //   usersRepo.getAllUsers(chat_id).then((res) => {
+  //     setUsersData(res);
+  //     console.log(res);
+  //   });
+  // }, [chat_id]);
 
   return (
     <div
@@ -86,18 +87,18 @@ export default function MessagesContent() {
       className="flex-grow-1 d-flex flex-column"
       id={styles.parnet}
     >
-      {usersData &&
+      {/* {usersData &&
         usersData.map((el, index) => (
           <header key={index} className="d-flex align-items-center p-3 gap-2">
             <img src={el.imgUrl} alt="" />
             <h5>{el.name}</h5>
           </header>
-        ))}
+        ))} */}
 
-      {/* <header className="d-flex align-items-center p-3 gap-2">
+      <header className="d-flex align-items-center p-3 gap-2">
         <img src={user} alt="" />
         <h5>ahmed</h5>
-      </header> */}
+      </header>
 
       <div className="p-3 d-flex flex-column gap-3" id={styles.chat}>
         {msgs &&

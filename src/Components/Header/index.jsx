@@ -48,7 +48,10 @@ export default function Header() {
           <span className={styles.counter}>0</span>
           <IoCartOutline className={styles.cartIcon} />
         </Link>
-        <img src={person} alt="" />
+
+        <Link to={"/profile"}>
+          <img src={person} alt="" />
+        </Link>
       </div>
     </header>
   );

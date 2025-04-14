@@ -1,11 +1,11 @@
 import Header from "../Components/Header";
-import Home from "../Pages/Home Page/UI";
+import { Outlet } from "react-router-dom";
 
 export default function MainLayout() {
   return (
-    <div className="col-12 h-100 ">
+    <div className="col-12 h-100">
       <Header />
-      <Home />
+      <Outlet />
     </div>
   );
 }

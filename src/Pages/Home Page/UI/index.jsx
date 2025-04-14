@@ -13,6 +13,7 @@ export default function Home() {
 
       <div className="p-3 d-flex flex-column gap-3" id={styles.content}>
         <AddPost />
+
         <Posts />
       </div>
     </main>
