@@ -4,6 +4,7 @@ import styles from "./index.module.css";
 import db from "../../FireBase";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { usersRepo } from "../../Data/Repos/users_repo";
+import { curretUserId } from "../../Store";
 
 export default function FriendsList() {
   const [chats, setChats] = useState([]);
@@ -17,16 +18,17 @@ export default function FriendsList() {
           let chatObj = { ...chat.data(), documentId: chat.id };
           let receiverId = chatObj.users.find((el) => el !== userId);
           let userData = await usersRepo.getUserData(receiverId);
-          return { ...chatObj, name: userData.name };
+          return { ...chatObj, name: userData.name, imgUrl: userData.imgUrl };
         });
         final = await Promise.all(promises);
+        // console.log(final);
         setChats(final);
       }
     );
   };
 
   useEffect(() => {
-    console.log(getChatLive("1"));
+    getChatLive(curretUserId);
   }, []);
 
   return (

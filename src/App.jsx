@@ -4,6 +4,7 @@ import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import MainLayout from "./Layouts/mainLayout";
 import Chat from "./Pages/Chat Page/UI";
+import ErrorPage from "./Pages/404 Page";
 
 export default function App() {
   return (
@@ -16,7 +17,7 @@ export default function App() {
         <Route path="/">
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
-          <Route path="*" element={<h1>404</h1>} />
+          <Route path="*" element={<ErrorPage />} />
         </Route>
       </Routes>
     </div>

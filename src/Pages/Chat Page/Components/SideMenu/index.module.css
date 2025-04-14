@@ -1,5 +1,23 @@
 nav {
-  width: 80px;
   height: 100%;
-  background-color: red;
+
+  a {
+    font-size: 1.5rem;
+    color: #999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    padding: 5px;
+    transition: 300ms linear;
+
+    &:hover {
+      background-color: var(--blue);
+      color: #fff;
+    }
+  }
+
+  .activeLink {
+    background-color: var(--blue);
+  }
 }

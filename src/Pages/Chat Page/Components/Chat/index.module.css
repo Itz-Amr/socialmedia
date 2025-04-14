@@ -51,7 +51,7 @@
     textArea {
       resize: none;
       flex-grow: 1;
-      padding: 1.5rem 0 0 2rem;
+      padding: 1.5rem 0 0 2.5rem;
       border-radius: 15px;
       border: 0;
       outline: 0;
@@ -68,7 +68,7 @@
       font-size: 1.5rem;
       top: 22px;
       cursor: pointer;
-      left: 0;
+      left: 5px;
     }
 
     button {
@@ -80,6 +80,23 @@
       &:hover {
         color: var(--yellow);
       }
+    }
+  }
+
+  .emjiIcon {
+    position: absolute;
+    top: 25px;
+    right: 80px;
+    cursor: pointer;
+    font-size: 1.5rem;
+  }
+
+  .emjiPicker {
+    position: absolute;
+    top: -20rem;
+    right: -12rem;
+
+    @media screen {
     }
   }
 }

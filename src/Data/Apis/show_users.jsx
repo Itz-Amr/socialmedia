@@ -6,7 +6,11 @@ export const showUser = async (userId) => {
   const docRef = doc(db, "users", userId);
   const userData = await getDoc(docRef);
   if (userData.exists()) {
-    final = { name: userData.data().name, id: userData.id };
+    final = {
+      name: userData.data().name,
+      id: userData.id,
+      imgUrl: userData.data().imgUrl,
+    };
   } else {
     console.log("No such document!");
   }

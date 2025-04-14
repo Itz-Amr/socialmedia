@@ -4,15 +4,10 @@ main {
   background-color: var(--white);
 
   #temp {
-    width: 25%;
+    width: 35%;
     height: 100%;
   }
   #content {
-    width: 50%;
-    height: 100%;
-  }
-  #friends {
-    width: 25%;
     height: 100%;
   }
 }

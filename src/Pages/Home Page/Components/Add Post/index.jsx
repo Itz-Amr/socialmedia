@@ -2,6 +2,7 @@ import styles from "./index.module.css";
 import user from "../../../../assets/user.jpg";
 import { CiEdit, CiLocationOn } from "react-icons/ci";
 import { SlCamera } from "react-icons/sl";
+import { IoMdAdd } from "react-icons/io";
 
 export default function AddPost() {
   return (
@@ -19,14 +20,21 @@ export default function AddPost() {
         <textarea placeholder="Write Somthing About You" />
       </div>
 
-      <div className="col-12 d-flex gap-3 align-items-center justify-content-center">
+      <div className="col-12 d-flex gap-3 align-items-center justify-content-around">
+        <button
+          className="d-flex align-items-center justify-content-center gap-2"
+          id={styles.btn}
+        >
+          <IoMdAdd className="fs-4" />
+          Add Post
+        </button>
         <label
           className="d-flex align-items-center justify-content-center gap-2"
           id={styles.btn}
           htmlFor="media-upload"
           style={{ cursor: "pointer" }}
         >
-          <SlCamera />
+          <SlCamera className="fs-4" />
           Post Media
           <input type="file" id="media-upload" accept="image/*,video/*" />
         </label>
@@ -35,7 +43,7 @@ export default function AddPost() {
           className="d-flex align-items-center justify-content-center gap-2"
           id={styles.btn}
         >
-          <CiLocationOn />
+          <CiLocationOn className="fs-4" />
           Post Location
         </button>
       </div>

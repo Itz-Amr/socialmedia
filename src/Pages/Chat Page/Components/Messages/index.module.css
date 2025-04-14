@@ -6,15 +6,24 @@
 
   header {
     padding-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
     background-color: transparent;
 
-    h6 {
+    img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+    }
+
+    h5 {
+      font-size: 15px;
       margin: 0;
       font-weight: 700;
     }
+  }
+
+  .exitIcon {
+    color: #999999;
+    font-size: 1.2rem;
   }
 
   .chatContainer {

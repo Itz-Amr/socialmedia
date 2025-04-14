@@ -1,4 +1,3 @@
-import SideMenu from "../Components/SideMenu";
 import styles from "./index.module.css";
 import Messages from "../Components/Messages";
 import MessagesContent from "../Components/Chat";
@@ -9,8 +8,6 @@ export default function Chat() {
       <MessagesContent />
 
       <Messages />
-
-      <SideMenu />
     </div>
   );
 }

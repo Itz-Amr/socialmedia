@@ -38,6 +38,7 @@
     outline: 0;
     padding: 3.5rem;
     border-bottom: 1px solid #757a91;
+    resize: none;
   }
 
   #btn {

@@ -15,10 +15,6 @@ export default function Home() {
         <AddPost />
         <Posts />
       </div>
-
-      <div className="p-3" id={styles.friends}>
-        <FriendsList />
-      </div>
     </main>
   );
 }
