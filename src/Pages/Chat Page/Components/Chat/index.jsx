@@ -1,7 +1,7 @@
 import styles from "./index.module.css";
 import user from "../../../../assets/user.jpg";
 import { VscSend } from "react-icons/vsc";
-import { curretUserId, useChat } from "../../../../Store";
+import { curretUserId, useChat, useMsgModal } from "../../../../Store";
 import { useEffect, useRef, useState } from "react";
 import db from "../../../../FireBase";
 import {
@@ -16,6 +16,8 @@ import { FaRegFaceSmile } from "react-icons/fa6";
 import EmojiPicker from "emoji-picker-react";
 import { usersRepo } from "../../../../Data/Repos/users_repo";
 import axios from "axios";
+import { FiMessageSquare } from "react-icons/fi";
+import MessagesModal from "../../../../Components/Messages Contnet Modal";
 
 export default function MessagesContent() {
   const [msgs, setMsgs] = useState([]);
@@ -23,6 +25,7 @@ export default function MessagesContent() {
   const { chat_id } = useChat();
   const [usersData, setUsersData] = useState([]);
   const inputRef = useRef();
+  // const [msgModal, setMsgModal] = useState(false);
   const handleEnter = (event) => {
     if (event.shiftKey && event.key === "Enter") {
       //aa
@@ -51,7 +54,6 @@ export default function MessagesContent() {
       collection(db, `chats/${chat_id}/messages`),
       orderBy("dataAndTime")
     );
-
     const unsubscribe = onSnapshot(q, (snapshot) => {
       let final = snapshot.docs.map((chat) => {
         return { ...chat.data(), documentId: chat.id };
@@ -74,30 +76,34 @@ export default function MessagesContent() {
     input.value = newText;
   };
 
-  // useEffect(() => {
-  //   usersRepo.getAllUsers(chat_id).then((res) => {
-  //     setUsersData(res);
-  //     console.log(res);
-  //   });
-  // }, [chat_id]);
-
+  useEffect(() => {
+    usersRepo.getAllUsers(chat_id).then((res) => {
+      setUsersData(res);
+      console.log(res);
+    });
+  }, [chat_id]);
+  const { msgModal } = useMsgModal();
   return (
     <div
       onClick={() => setShowEmoji(false)}
       className="flex-grow-1 d-flex flex-column"
       id={styles.parnet}
     >
-      {/* {usersData &&
+      {usersData &&
         usersData.map((el, index) => (
           <header key={index} className="d-flex align-items-center p-3 gap-2">
             <img src={el.imgUrl} alt="" />
             <h5>{el.name}</h5>
           </header>
-        ))} */}
+        ))}
 
-      <header className="d-flex align-items-center p-3 gap-2">
-        <img src={user} alt="" />
-        <h5>ahmed</h5>
+      <header className="d-flex align-items-center justify-content-between p-3">
+        <div className="d-flex align-items-center justify-content-center gap-2">
+          <img src={user} alt="" />
+          <h5>ahmed</h5>
+        </div>
+
+        <FiMessageSquare className={styles.msgIcon} onClick={() => {}} />
       </header>
 
       <div className="p-3 d-flex flex-column gap-3" id={styles.chat}>

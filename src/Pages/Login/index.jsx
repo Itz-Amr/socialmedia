@@ -3,11 +3,28 @@ import styles from "./index.module.css";
 import * as Yup from "yup";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Login() {
   const [showPass, setShowPass] = useState(false);
+  const navigate = useNavigate();
+  const auth = getAuth();
+
+  const handleSubmite = (values) => {
+    signInWithEmailAndPassword(auth, values.email, values.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        let accessToken = user.accessToken;
+        sessionStorage.setItem("accessToken", accessToken);
+        navigate("/");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  };
 
   const validationSchema = Yup.object({
     email: Yup.string().email("invaled email").required("email is required"),
@@ -24,6 +41,7 @@ export default function Login() {
         <p>Please, Sign in to continue</p>
       </div>
       <Formik
+        onSubmit={handleSubmite}
         validationSchema={validationSchema}
         initialValues={{ email: "", password: "" }}
       >

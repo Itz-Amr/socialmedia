@@ -7,7 +7,9 @@ export default function Chat() {
     <div className="col-12 h-100 d-flex">
       <MessagesContent />
 
-      <Messages />
+      <div className={styles.Chat}>
+        <Messages />
+      </div>
     </div>
   );
 }

@@ -26,3 +26,17 @@ export const useChat = create((set) => ({
   chat_id: 0,
   setOpenedChat: (chat_id) => set(() => ({ chat_id })),
 }));
+
+export const useMsgModal = create(() => ({
+  msgModal: true,
+}));
+
+export const useCommentModal = create((set) => ({
+  commentsModal: false,
+  selectedPostId: null,
+
+  openCommentsModal: (postId) =>
+    set(() => ({ commentsModal: true, selectedPostId: postId })),
+
+  closeCommentsModal: () => set(() => ({ commentsModal: false })),
+}));

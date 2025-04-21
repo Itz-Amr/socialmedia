@@ -2,11 +2,11 @@ import styles from "./index.module.css";
 import noImg from "../../../../assets/no-img-avalabie.jpeg";
 import FriendsList from "../../../../Components/Friends list";
 import { Link } from "react-router-dom";
-import { RiCloseLine } from "react-icons/ri";
 import { usersRepo } from "../../../../Data/Repos/users_repo";
 import { useEffect, useState } from "react";
 import { curretUserId } from "../../../../Store";
 import LoadingModal from "../../../../Components/Loading Modal";
+import { IoMdClose } from "react-icons/io";
 
 export default function Messages() {
   const [userData, setUserData] = useState(null);
@@ -24,7 +24,7 @@ export default function Messages() {
           <h5>{userData.name || "No available name "}</h5>
         </div>
         <Link to={"/"}>
-          <RiCloseLine className={styles.exitIcon} />
+          <IoMdClose className={styles.exitIcon} />
         </Link>
       </header>
       <div className={styles.chatContainer}>

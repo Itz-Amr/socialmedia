@@ -1,3 +1,4 @@
+import MessagesModal from "../../../Components/Messages Contnet Modal";
 import UserImageCover from "../Component/User image cover";
 import UserInfo from "../Component/User info";
 import UserPosts from "../Component/User Posts";

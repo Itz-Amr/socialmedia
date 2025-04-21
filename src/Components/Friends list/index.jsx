@@ -1,34 +1,21 @@
 import { useEffect, useState } from "react";
 import FriendsChat from "../Friends Chat";
 import styles from "./index.module.css";
-import db from "../../FireBase";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
-import { usersRepo } from "../../Data/Repos/users_repo";
 import { curretUserId } from "../../Store";
+import { liveChatRepo } from "../../Data/Repos/live_chat_repo";
 
 export default function FriendsList() {
   const [chats, setChats] = useState([]);
 
-  const getChatLive = (userId) => {
-    onSnapshot(
-      query(collection(db, "chats"), where("users", "array-contains", userId)),
-      async (chats) => {
-        let final = [];
-        let promises = chats.docs.map(async (chat) => {
-          let chatObj = { ...chat.data(), documentId: chat.id };
-          let receiverId = chatObj.users.find((el) => el !== userId);
-          let userData = await usersRepo.getUserData(receiverId);
-          return { ...chatObj, name: userData.name, imgUrl: userData.imgUrl };
-        });
-        final = await Promise.all(promises);
-        // console.log(final);
-        setChats(final);
+  useEffect(() => {
+    const unsubscribe = liveChatRepo.subscribeToLiveChats(
+      curretUserId,
+      (data) => {
+        setChats(data);
       }
     );
-  };
 
-  useEffect(() => {
-    getChatLive(curretUserId);
+    return () => unsubscribe();
   }, []);
 
   return (

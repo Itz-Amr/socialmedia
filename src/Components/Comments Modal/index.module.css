@@ -1,0 +1,44 @@
+#body {
+  background-color: rgba(0, 0, 0, 0.457);
+  inset: 0;
+
+  button {
+    color: #999;
+    background-color: transparent;
+    transition: 300ms linear;
+
+    &:hover {
+      color: black;
+    }
+  }
+
+  input {
+    outline: 0;
+    border: 0;
+    width: 100%;
+    border-radius: 10px;
+    background-color: var(--white);
+  }
+
+  p {
+    color: #999;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .deleteIcon {
+    color: #999;
+    position: absolute;
+    top: 5px;
+    right: 0;
+    font-size: 10px;
+    cursor: pointer;
+    transition: 300ms linear;
+
+    &:hover {
+      color: black;
+    }
+  }
+}

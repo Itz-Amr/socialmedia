@@ -9,30 +9,42 @@ import { IoCartOutline } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import logo from "../../assets/Logo/logo-V.png";
-import person from "../../assets/user.jpg";
+import { useEffect, useState } from "react";
+import { usersRepo } from "../../Data/Repos/users_repo";
+import { curretUserId } from "../../Store";
 
 export default function Header() {
+  const [userData, setUserData] = useState();
+  useEffect(() => {
+    usersRepo.getUserData(curretUserId).then((res) => {
+      setUserData(res);
+    });
+  }, []);
+
+  if (!userData) {
+    return null;
+  }
   return (
     <header className="p-3 d-flex align-items-center justify-content-between">
       <div className="d-flex gap-3 align-items-center">
         <img src={logo} alt="" />
 
-        <Link to={"/"} className="position-relative">
+        <Link title="Home" to={"/"} className="position-relative">
           <span className={styles.counter}>0</span>
           <LiaHomeSolid className={styles.homeIcon} />
         </Link>
 
-        <Link className="position-relative">
+        <Link title="Friends request" className="position-relative">
           <span className={styles.counter}>0</span>
           <LiaUserFriendsSolid className={styles.friendsIcon} />
         </Link>
 
-        <Link to={"/chat"} className="position-relative">
+        <Link title="Chat" to={"/chat"} className="position-relative">
           <span className={styles.counter}>0</span>
           <FiMessageSquare className={styles.msgIcon} />
         </Link>
 
-        <Link className="position-relative">
+        <Link title="Notifications" className="position-relative">
           <span className={styles.counter}>0</span>
           <LiaBellSolid className={styles.notiIcon} />
         </Link>
@@ -50,7 +62,10 @@ export default function Header() {
         </Link>
 
         <Link to={"/profile"}>
-          <img src={person} alt="" />
+          <img
+            src={userData.imgUrl || "https://via.placeholder.com/40"}
+            alt=""
+          />
         </Link>
       </div>
     </header>

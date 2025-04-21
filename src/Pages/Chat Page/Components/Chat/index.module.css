@@ -14,6 +14,16 @@
     }
   }
 
+  .msgIcon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: none;
+
+    @media screen and (max-width: 767px) {
+      display: block;
+    }
+  }
+
   #chat {
     width: 100%;
     height: 1vh;
@@ -66,9 +76,9 @@
     .icon {
       position: absolute;
       font-size: 1.5rem;
-      top: 22px;
+      top: 23px;
       cursor: pointer;
-      left: 5px;
+      left: 10px;
     }
 
     button {
@@ -76,10 +86,6 @@
       height: max-content;
       transition: 300ms linear;
       background-color: transparent;
-
-      &:hover {
-        color: var(--yellow);
-      }
     }
   }
 

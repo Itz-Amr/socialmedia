@@ -3,8 +3,38 @@ import user from "../../../../assets/user.jpg";
 import { CiEdit, CiLocationOn } from "react-icons/ci";
 import { SlCamera } from "react-icons/sl";
 import { IoMdAdd } from "react-icons/io";
+import { useEffect, useRef, useState } from "react";
+import { addDoc, collection, Timestamp } from "firebase/firestore";
+import db from "../../../../FireBase";
+import { curretUserId } from "../../../../Store";
+import { usersRepo } from "../../../../Data/Repos/users_repo";
 
 export default function AddPost() {
+  const [userData, setUserData] = useState(null);
+  const textRef = useRef();
+
+  const handleAddPost = async () => {
+    const content = textRef.current?.value.trim();
+    if (!content) return;
+
+    await addDoc(collection(db, "posts"), {
+      content,
+      userId: curretUserId,
+      dateAndTime: Timestamp.now(),
+    });
+    textRef.current.value = "";
+  };
+
+  useEffect(() => {
+    usersRepo.getUserData(curretUserId).then((res) => {
+      setUserData(res);
+    });
+  }, []);
+
+  if (!userData) {
+    return null;
+  }
+
   return (
     <div className="" id={styles.container}>
       <div
@@ -16,12 +46,13 @@ export default function AddPost() {
       </div>
 
       <div id={styles.textArea}>
-        <img src={user} alt="" />
-        <textarea placeholder="Write Somthing About You" />
+        <img src={userData.imgUrl} alt="" />
+        <textarea ref={textRef} placeholder="Write Somthing About You" />
       </div>
 
       <div className="col-12 d-flex gap-3 align-items-center justify-content-around">
         <button
+          onClick={handleAddPost}
           className="d-flex align-items-center justify-content-center gap-2"
           id={styles.btn}
         >

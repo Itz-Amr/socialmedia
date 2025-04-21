@@ -1,6 +1,5 @@
 #parnet {
   width: 100%;
-  background-color: #fff;
   border-radius: 10px;
 
   h6 {
@@ -24,21 +23,29 @@
   }
 
   button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
     padding: 10px;
     border: 0;
     outline: 0;
-    background-color: var(--yellow);
-    border-radius: 10px;
+    background-color: transparent;
+    background-color: var(--blue);
+    border-radius: 50%;
+    position: relative;
+  }
+
+  #counter {
+    width: 1.2rem;
+    height: 1.2rem;
+    top: -5px;
+    right: -5px;
     color: #fff;
+    background-color: black;
+    border-radius: 50%;
+    text-align: center;
   }
 
   .icon {
     font-size: 20px;
-    color: #fff;
+    color: white;
   }
 
   .content {
