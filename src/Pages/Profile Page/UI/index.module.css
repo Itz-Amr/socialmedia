@@ -8,5 +8,16 @@
     align-self: flex-start;
     height: fit-content;
     z-index: 2;
+
+    @media screen and (max-width: 767px) {
+      width: 100%;
+      position: relative;
+    }
+  }
+}
+
+#container {
+  @media screen and (max-width: 576px) {
+    flex-direction: column !important;
   }
 }

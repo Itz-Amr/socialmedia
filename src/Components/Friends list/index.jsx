@@ -26,7 +26,7 @@ export default function FriendsList() {
       >
         <h6>Friends</h6>
       </div>
-      <div className="d-flex flex-column gap-3 overflow-auto">
+      <div className="d-flex flex-column overflow-auto">
         {chats.map((el) => (
           <FriendsChat
             key={el.documentId}

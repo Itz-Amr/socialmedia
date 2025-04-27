@@ -1,6 +1,14 @@
 #body {
   width: 400px;
 
+  @media screen and (max-width: 900px) {
+    width: 200px;
+  }
+
+  @media screen and (max-width: 767px) {
+    width: 100%;
+  }
+
   #info {
     border-radius: 10px;
   }

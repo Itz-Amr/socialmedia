@@ -1,7 +1,6 @@
 import styles from "./index.module.css";
-import user from "../../../../assets/user.jpg";
 import { VscSend } from "react-icons/vsc";
-import { curretUserId, useChat, useMsgModal } from "../../../../Store";
+import { curretUserId, useChat } from "../../../../Store";
 import { useEffect, useRef, useState } from "react";
 import db from "../../../../FireBase";
 import {
@@ -10,29 +9,27 @@ import {
   onSnapshot,
   orderBy,
   query,
+  getDoc,
+  doc,
 } from "firebase/firestore";
 import { RiAddLine } from "react-icons/ri";
 import { FaRegFaceSmile } from "react-icons/fa6";
 import EmojiPicker from "emoji-picker-react";
 import { usersRepo } from "../../../../Data/Repos/users_repo";
-import axios from "axios";
-import { FiMessageSquare } from "react-icons/fi";
-import MessagesModal from "../../../../Components/Messages Contnet Modal";
 
 export default function MessagesContent() {
   const [msgs, setMsgs] = useState([]);
   const [showEmoji, setShowEmoji] = useState(false);
   const { chat_id } = useChat();
-  const [usersData, setUsersData] = useState([]);
+  const [chatPartner, setChatPartner] = useState(null);
   const inputRef = useRef();
-  // const [msgModal, setMsgModal] = useState(false);
+
   const handleEnter = (event) => {
     if (event.shiftKey && event.key === "Enter") {
-      //aa
+      // Allow multiline input with Shift+Enter
     } else if (event.key === "Enter") {
       event.preventDefault();
       sendMsg();
-      emoji.emoji;
     }
   };
 
@@ -49,20 +46,52 @@ export default function MessagesContent() {
     inputRef.current.value = "";
   };
 
+  // Load messages when chat_id changes
   useEffect(() => {
+    if (!chat_id) return;
+
     const q = query(
       collection(db, `chats/${chat_id}/messages`),
       orderBy("dataAndTime")
     );
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
       let final = snapshot.docs.map((chat) => {
         return { ...chat.data(), documentId: chat.id };
       });
-      console.log(final);
       setMsgs(final);
     });
 
     return () => unsubscribe(); // cleanup when unmount or chat_id changes
+  }, [chat_id]);
+
+  // Load chat partner info
+  useEffect(() => {
+    const getChatPartnerInfo = async () => {
+      if (!chat_id) return;
+
+      try {
+        // Get the chat document to access the users array
+        const chatDoc = await getDoc(doc(db, "chats", chat_id));
+
+        if (chatDoc.exists()) {
+          const chatData = chatDoc.data();
+
+          // Find the other user ID (not the current user)
+          const receiverId = chatData.users.find((id) => id !== curretUserId);
+
+          if (receiverId) {
+            // Get the receiver's user data
+            const userData = await usersRepo.getUserData(receiverId);
+            setChatPartner(userData);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching chat partner info:", error);
+      }
+    };
+
+    getChatPartnerInfo();
   }, [chat_id]);
 
   const handleEmojiClick = (emojiData) => {
@@ -74,37 +103,30 @@ export default function MessagesContent() {
 
     const newText = text.slice(0, start) + emoji + text.slice(end);
     input.value = newText;
+
+    // Set cursor position after the inserted emoji
+    input.selectionStart = start + emoji.length;
+    input.selectionEnd = start + emoji.length;
+    input.focus();
   };
 
-  useEffect(() => {
-    usersRepo.getAllUsers(chat_id).then((res) => {
-      setUsersData(res);
-      console.log(res);
-    });
-  }, [chat_id]);
-  const { msgModal } = useMsgModal();
   return (
     <div
       onClick={() => setShowEmoji(false)}
       className="flex-grow-1 d-flex flex-column"
       id={styles.parnet}
     >
-      {usersData &&
-        usersData.map((el, index) => (
-          <header key={index} className="d-flex align-items-center p-3 gap-2">
-            <img src={el.imgUrl} alt="" />
-            <h5>{el.name}</h5>
-          </header>
-        ))}
-
-      <header className="d-flex align-items-center justify-content-between p-3">
-        <div className="d-flex align-items-center justify-content-center gap-2">
-          <img src={user} alt="" />
-          <h5>ahmed</h5>
-        </div>
-
-        <FiMessageSquare className={styles.msgIcon} onClick={() => {}} />
-      </header>
+      {/* Header with chat partner info */}
+      {chatPartner && (
+        <header className="d-flex align-items-center p-3 gap-2">
+          <img
+            src={chatPartner.imgUrl}
+            alt={`${chatPartner.name}'s avatar`}
+            className={styles.avatarImg}
+          />
+          <h5 className="mb-0">{chatPartner.name}</h5>
+        </header>
+      )}
 
       <div className="p-3 d-flex flex-column gap-3" id={styles.chat}>
         {msgs &&
@@ -112,7 +134,7 @@ export default function MessagesContent() {
             <div key={el.documentId} id={styles.msgs}>
               <p
                 className={
-                  el.userSend == curretUserId ? styles.myMsg : styles.otherMsg
+                  el.userSend === curretUserId ? styles.myMsg : styles.otherMsg
                 }
               >
                 {el.msgContent}
@@ -126,8 +148,6 @@ export default function MessagesContent() {
         id={styles.footer}
       >
         <div className="col-12 d-flex align-items-center justify-content-center position-relative">
-          {/* <input type="image" /> */}
-
           <RiAddLine className={styles.icon} />
 
           <form

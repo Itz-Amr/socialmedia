@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./index.module.css";
 import defaultCover from "../../../../assets/no-img-avalabie.jpeg";
-import { curretUserId } from "../../../../Store";
 import { usersRepo } from "../../../../Data/Repos/users_repo";
 import LoadingModal from "../../../../Components/Loading Modal";
+import { curretUserId } from "../../../../Store"; // Import for comparison
 
-export default function UserImageCover() {
+export default function UserImageCover({ profileUserId }) {
   const fileInputRef = useRef(null);
   const [coverImage, setCoverImage] = useState(defaultCover);
-  const [userData, setUserData] = useState();
+  const [userData, setUserData] = useState(null);
 
   const handleCoverClick = () => {
     fileInputRef.current.click();
@@ -23,14 +23,38 @@ export default function UserImageCover() {
   };
 
   useEffect(() => {
-    usersRepo.getUserData(curretUserId).then((res) => {
-      setUserData(res);
-    });
-  }, []);
+    let isMounted = true;
+    setUserData(null);
+    console.log("UserImageCover useEffect started for:", profileUserId);
+    usersRepo
+      .getUserData(profileUserId)
+      .then((res) => {
+        console.log("UserImageCover data fetched:", res);
+        if (isMounted && res) {
+          setUserData(res);
+          setCoverImage(res?.coverUrl || defaultCover);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user data in UserImageCover:", error);
+        if (isMounted) {
+          setUserData({});
+        }
+      })
+      .finally(() => {
+        console.log("UserImageCover useEffect finished for:", profileUserId);
+      });
 
-  if (!userData) {
+    return () => {
+      isMounted = false;
+    };
+  }, [profileUserId]);
+
+  if (userData === null) {
+    console.log("UserImageCover: userData is null, showing LoadingModal");
     return <LoadingModal />;
   }
+
   return (
     <div
       className="col-12 d-flex flex-column p-3 overflow-auto"
@@ -41,9 +65,11 @@ export default function UserImageCover() {
           className={styles.coverImage}
           style={{ backgroundImage: `url(${coverImage})` }}
         >
-          <button className={styles.editCover} onClick={handleCoverClick}>
-            📷 Edit cover image
-          </button>
+          {profileUserId === curretUserId && (
+            <button className={styles.editCover} onClick={handleCoverClick}>
+              📷 Edit cover image
+            </button>
+          )}
           <input
             type="file"
             accept="image/"
@@ -55,8 +81,12 @@ export default function UserImageCover() {
 
         <div className={styles.profileDetails}>
           <div className="z-1 d-flex flex-column align-items-center gap-2">
-            <img src={userData.imgUrl} className={styles.profilePic} />
-            <h5 className="m-0 fw-bold">{userData.name}</h5>
+            <img
+              src={userData?.imgUrl || "/default-avatar.jpg"}
+              className={styles.profilePic}
+              alt={userData?.name || "User Profile"}
+            />
+            <h5 className="m-0 fw-bold">{userData?.name || "Unknown User"}</h5>
           </div>
         </div>
       </div>

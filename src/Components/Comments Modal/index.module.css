@@ -1,6 +1,7 @@
 #body {
   background-color: rgba(0, 0, 0, 0.457);
   inset: 0;
+  z-index: 5;
 
   button {
     color: #999;

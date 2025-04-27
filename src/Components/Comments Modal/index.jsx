@@ -1,5 +1,6 @@
+// CommentsModal.jsx
 import { useState, useEffect } from "react";
-import { useCommentModal } from "../../Store";
+import { curretUserId, useCommentModal } from "../../Store";
 import styles from "./index.module.css";
 import db from "../../FireBase";
 import {
@@ -10,6 +11,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  getDoc,
 } from "firebase/firestore";
 import { formatDistanceToNow } from "date-fns";
 import { FaClock, FaRegTrashAlt } from "react-icons/fa";
@@ -19,6 +21,8 @@ export default function CommentsModal() {
   const { closeCommentsModal, selectedPostId } = useCommentModal();
   const [comment, setComment] = useState("");
   const [commentsList, setCommentsList] = useState([]);
+  const [commentUsers, setCommentUsers] = useState({});
+  const userId = curretUserId; // Get the current user ID
 
   // Get Comments
   useEffect(() => {
@@ -28,12 +32,34 @@ export default function CommentsModal() {
       collection(db, `posts/${selectedPostId}/comments`),
       orderBy("dateAndTime")
     );
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
       const allComments = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setCommentsList(allComments);
+
+      // Fetch user data for each comment if not already fetched
+      const userPromises = allComments.map(async (comment) => {
+        if (comment.userId && !commentUsers[comment.userId]) {
+          try {
+            const userDoc = await getDoc(doc(db, "users", comment.userId));
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              setCommentUsers((prevUsers) => ({
+                ...prevUsers,
+                [comment.userId]: {
+                  name: userData.name || "Unknown User",
+                  imgUrl: userData.imgUrl || "/default-avatar.jpg",
+                },
+              }));
+            }
+          } catch (error) {
+            console.error("Error fetching comment user data:", error);
+          }
+        }
+      });
+      await Promise.all(userPromises);
     });
 
     return () => unsubscribe();
@@ -44,11 +70,20 @@ export default function CommentsModal() {
     e.preventDefault();
     if (comment.trim() === "") return;
 
-    await addDoc(collection(db, "posts", selectedPostId, "comments"), {
-      text: comment,
-      dateAndTime: new Date(),
-    });
-    setComment("");
+    if (userId) {
+      try {
+        await addDoc(collection(db, "posts", selectedPostId, "comments"), {
+          text: comment,
+          dateAndTime: new Date(),
+          userId: userId, // Use the current user ID
+        });
+        setComment("");
+      } catch (error) {
+        console.error("Error adding comment:", error);
+      }
+    } else {
+      console.log("User is not logged in.");
+    }
   };
 
   // Delete Comment
@@ -84,35 +119,48 @@ export default function CommentsModal() {
 
         <div className="flex-grow-1 overflow-auto mb-3">
           {commentsList.length === 0 ? (
-            <p className="text-center">No comments yet</p>
+            <div className="d-flex flex-column align-items-center justify-content-center">
+              <p className="text-center fw-bold">No comments yet</p>
+            </div>
           ) : (
-            commentsList.map((el) => (
-              <div
-                key={el.id}
-                className="d-flex flex-column gap-2 border-bottom"
-              >
-                <div className="d-flex py-3 justify-content-between align-items-center position-relative">
-                  <strong>User</strong>
-                  <FaRegTrashAlt
-                    className={styles.deleteIcon}
-                    onClick={() => handleDelete(el.id)}
-                    title="Delete comment"
-                  />
+            commentsList.map((el) => {
+              const commenterInfo = commentUsers[el.userId] || {
+                name: "Unknown User",
+                imgUrl: "/default-avatar.jpg",
+              };
+              return (
+                <div
+                  key={el.id}
+                  className="d-flex flex-column gap-2 border-bottom"
+                >
+                  <div className="d-flex py-3 justify-content-between align-items-center position-relative">
+                    <div className="d-flex align-items-center gap-2">
+                      <img src={commenterInfo.imgUrl} alt="" />
+                      <strong>{commenterInfo.name}</strong>
+                    </div>
+                    {el.userId === userId && (
+                      <FaRegTrashAlt
+                        className={styles.deleteIcon}
+                        onClick={() => handleDelete(el.id)}
+                        title="Delete comment"
+                      />
+                    )}
 
-                  <p>
-                    <FaClock />
-                    {el.dateAndTime?.seconds
-                      ? formatDistanceToNow(
-                          new Date(el.dateAndTime.seconds * 1000),
-                          { addSuffix: true }
-                        )
-                      : "No date"}
-                  </p>
+                    <p>
+                      <FaClock />
+                      {el.dateAndTime?.seconds
+                        ? formatDistanceToNow(
+                            new Date(el.dateAndTime.seconds * 1000),
+                            { addSuffix: true }
+                          )
+                        : "No date"}
+                    </p>
+                  </div>
+
+                  <span>{el.text}</span>
                 </div>
-
-                <span>{el.text}</span>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 

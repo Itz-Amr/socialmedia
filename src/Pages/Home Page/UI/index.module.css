@@ -1,14 +1,35 @@
-main {
+.mainContainer {
   width: 100%;
-  height: 90vh;
+  min-height: 90vh;
   background-color: var(--white);
+  flex-wrap: wrap;
+  padding: 5rem;
+}
 
+.sidebar {
+  position: sticky;
+  top: 0;
+  flex: 0 0 300px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.contentArea {
+  flex: 1;
+  min-width: 300px;
+}
+
+@media screen and (max-width: 768px) {
   .sidebar {
-    position: sticky;
-    top: 0;
+    display: none;
+  }
 
-    @media screen and (max-width: 767px) {
-      display: none;
-    }
+  .mainContainer {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .contentArea {
+    width: 100%;
   }
 }

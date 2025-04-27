@@ -21,6 +21,10 @@
   .icon {
     font-size: 20px;
     color: #757a91;
+
+    @media (max-width: 480px) {
+      font-size: 15px;
+    }
   }
 
   img {
@@ -44,13 +48,17 @@
   }
 
   #btn {
-    padding: 10px;
+    padding: 7px;
     background-color: #f7f7f7;
     border: 0;
     margin-bottom: 10px;
     border-radius: 15px;
     color: #757a91;
     font-weight: 600;
+
+    @media (max-width: 480px) {
+      font-size: 10px;
+    }
   }
 
   input {

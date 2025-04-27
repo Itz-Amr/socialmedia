@@ -1,5 +1,4 @@
 import styles from "./index.module.css";
-import user from "../../../../assets/user.jpg";
 import { CiEdit, CiLocationOn } from "react-icons/ci";
 import { SlCamera } from "react-icons/sl";
 import { IoMdAdd } from "react-icons/io";
@@ -56,7 +55,7 @@ export default function AddPost() {
           className="d-flex align-items-center justify-content-center gap-2"
           id={styles.btn}
         >
-          <IoMdAdd className="fs-4" />
+          <IoMdAdd className={styles.icon} />
           Add Post
         </button>
         <label
@@ -65,7 +64,7 @@ export default function AddPost() {
           htmlFor="media-upload"
           style={{ cursor: "pointer" }}
         >
-          <SlCamera className="fs-4" />
+          <SlCamera className={styles.icon} />
           Post Media
           <input type="file" id="media-upload" accept="image/*,video/*" />
         </label>
@@ -74,7 +73,7 @@ export default function AddPost() {
           className="d-flex align-items-center justify-content-center gap-2"
           id={styles.btn}
         >
-          <CiLocationOn className="fs-4" />
+          <CiLocationOn className={styles.icon} />
           Post Location
         </button>
       </div>

@@ -1,8 +1,4 @@
-import {
-  LiaBellSolid,
-  LiaHomeSolid,
-  LiaUserFriendsSolid,
-} from "react-icons/lia";
+import { LiaBellSolid, LiaHomeSolid } from "react-icons/lia";
 import styles from "./index.module.css";
 import { FiMessageSquare } from "react-icons/fi";
 import { IoCartOutline } from "react-icons/io5";
@@ -24,6 +20,7 @@ export default function Header() {
   if (!userData) {
     return null;
   }
+
   return (
     <header className="p-3 d-flex align-items-center justify-content-between">
       <div className="d-flex gap-3 align-items-center">
@@ -32,11 +29,6 @@ export default function Header() {
         <Link title="Home" to={"/"} className="position-relative">
           <span className={styles.counter}>0</span>
           <LiaHomeSolid className={styles.homeIcon} />
-        </Link>
-
-        <Link title="Friends request" className="position-relative">
-          <span className={styles.counter}>0</span>
-          <LiaUserFriendsSolid className={styles.friendsIcon} />
         </Link>
 
         <Link title="Chat" to={"/chat"} className="position-relative">
@@ -48,7 +40,6 @@ export default function Header() {
           <span className={styles.counter}>0</span>
           <LiaBellSolid className={styles.notiIcon} />
         </Link>
-        {/* <LiaHeart className={styles.icon} /> */}
       </div>
 
       <div className="d-flex gap-3 align-items-center">
@@ -62,10 +53,7 @@ export default function Header() {
         </Link>
 
         <Link to={"/profile"}>
-          <img
-            src={userData.imgUrl || "https://via.placeholder.com/40"}
-            alt=""
-          />
+          <img src={userData.imgUrl || "https://via.placeholder.com/40"} />
         </Link>
       </div>
     </header>

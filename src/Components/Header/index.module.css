@@ -4,6 +4,7 @@ header {
   height: 10vh;
   position: sticky;
   inset: 0;
+  z-index: 2;
 
   img {
     width: 40px;
