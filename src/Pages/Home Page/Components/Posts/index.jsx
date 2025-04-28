@@ -29,7 +29,7 @@ export default function Posts() {
   const { commentsModal } = useCommentModal();
   const { openCommentsModal } = useCommentModal();
   const userId = curretUserId;
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const q = query(collection(db, "posts"), orderBy("dateAndTime", "desc"));
@@ -127,7 +127,7 @@ export default function Posts() {
   }
 
   return (
-    <div className="d-flex flex-column gap-3" id={styles.parnet}>
+    <div className="d-flex flex-column flex-grow-1 gap-3" id={styles.parnet}>
       {posts.map((el) => {
         const userInfo = users[el.userId] || {
           name: "Unknown User",

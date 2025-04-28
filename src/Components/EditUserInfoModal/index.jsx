@@ -35,19 +35,16 @@ export default function EditUserInfoModal({
     }
 
     setIsLoading(true);
-    setError(null); // Reset error before saving
+    setError(null);
 
     try {
-      const userDocRef = doc(db, "users", profileUserId); // Using the profileUserId for saving edits
+      const userDocRef = doc(db, "users", profileUserId);
 
-      // Update the data in Firebase
       await updateDoc(userDocRef, formData);
 
-      // Update the UI after saving
       onSaveSuccess();
 
       onClose();
-      console.log("Profile updated!");
     } catch (error) {
       setError("Error updating profile. Please try again.");
       console.error("Error updating profile:", error);

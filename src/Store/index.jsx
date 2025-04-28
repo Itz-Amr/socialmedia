@@ -35,13 +35,15 @@ export const useCommentModal = create((set) => ({
 
 export const useEditUserInfoModal = create((set) => ({
   isOpen: false,
+
   userInfo: {
     studiedAt: "",
     marriedTo: "",
     from: "",
     livesIn: "",
   },
-  updatedUserInfo: null, // To hold the updated info
+
+  updatedUserInfo: null,
 
   openModal: (userInfo) => set({ isOpen: true, userInfo }),
   closeModal: () => set({ isOpen: false }),

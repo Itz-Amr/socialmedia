@@ -38,6 +38,8 @@
     border-radius: 10px;
     background: var(--yellow);
     transition: 300ms linear;
+    display: flex;
+    justify-content: center;
 
     &:hover {
       transform: scale(0.9);
@@ -185,7 +187,7 @@
 }
 
 .inputContainer.error {
-  margin-bottom: 5em; /* Make space for error message */
+  margin-bottom: 5em;
 }
 
 .inputContainer.error .inputBar {

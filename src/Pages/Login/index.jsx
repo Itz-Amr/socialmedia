@@ -6,6 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import Swal from "sweetalert2";
 
 export default function Login() {
   const [showPass, setShowPass] = useState(false);
@@ -15,20 +16,37 @@ export default function Login() {
   const handleSubmite = (values) => {
     signInWithEmailAndPassword(auth, values.email, values.password)
       .then((userCredential) => {
-        const user = userCredential.user;
-        let accessToken = user.accessToken;
-        sessionStorage.setItem("accessToken", accessToken);
         navigate("/");
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+        let errorMessage = "";
+
+        switch (error.code) {
+          case "auth/user-not-found":
+            errorMessage = "This email is not registered.";
+            break;
+          case "auth/wrong-password":
+            errorMessage = "Incorrect password.";
+            break;
+          case "auth/too-many-requests":
+            errorMessage = "Too many attempts, please try again later.";
+            break;
+          default:
+            errorMessage = "An unexpected error occurred.";
+        }
+
+        Swal.fire({
+          icon: "error",
+          title: "Email or password is incorrect",
+        });
       });
   };
 
   const validationSchema = Yup.object({
-    email: Yup.string().email("invaled email").required("email is required"),
-    password: Yup.string().required("password is required"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    password: Yup.string().required("Password is required"),
   });
 
   return (
@@ -45,7 +63,7 @@ export default function Login() {
         validationSchema={validationSchema}
         initialValues={{ email: "", password: "" }}
       >
-        <Form className="col-6  p-3 bg-white shadow rounded d-flex flex-column justify-content-center gap-4">
+        <Form className="col-6 p-3 bg-white shadow rounded d-flex flex-column justify-content-center gap-4">
           <div className={styles.inputContainer}>
             <Field
               name="email"
@@ -93,7 +111,7 @@ export default function Login() {
           </div>
 
           <button type="submit" className={styles.signInBtn}>
-            Sing in
+            Sign in
           </button>
 
           <span className="col-12 text-center">or</span>
