@@ -4,17 +4,22 @@ import FriendsList from "../../../../Components/Friends list";
 import { Link } from "react-router-dom";
 import { usersRepo } from "../../../../Data/Repos/users_repo";
 import { useEffect, useState } from "react";
-import { curretUserId } from "../../../../Store";
 import LoadingModal from "../../../../Components/Loading Modal";
 import { IoMdClose } from "react-icons/io";
+import { useAuthStore } from "../../../../Store/authStore";
 
 export default function Messages() {
   const [userData, setUserData] = useState(null);
+  const { currentUser } = useAuthStore(); // Get the current user
+  const userId = currentUser?.uid; // Safely access the uid
+
   useEffect(() => {
-    usersRepo.getUserData(curretUserId).then((res) => {
-      setUserData(res);
-    });
-  }, []);
+    if (userId) {
+      usersRepo.getUserData(userId).then((res) => {
+        setUserData(res);
+      });
+    }
+  }, [userId]); // Fetch user data when userId changes
 
   return userData ? (
     <div className="p-3 d-flex flex-column" id={styles.parnet}>

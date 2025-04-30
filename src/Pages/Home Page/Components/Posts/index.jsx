@@ -1,7 +1,6 @@
 import styles from "./index.module.css";
 import { LiaCommentAlt } from "react-icons/lia";
 import { useEffect, useState } from "react";
-import db from "../../../../FireBase";
 import {
   collection,
   deleteDoc,
@@ -17,8 +16,10 @@ import CommentsModal from "../../../../Components/Comments Modal";
 import { useCommentModal } from "../../../../Store";
 import LoadingModal from "../../../../Components/Loading Modal";
 import { BiSolidLike } from "react-icons/bi";
-import { curretUserId } from "../../../../Store";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../../../Store/authStore";
+import { FaUserCircle } from "react-icons/fa";
+import db from "../../../../FireBase";
 
 export default function Posts() {
   const [posts, setPosts] = useState([]);
@@ -28,7 +29,8 @@ export default function Posts() {
   const [userLikedPosts, setUserLikedPosts] = useState({});
   const { commentsModal } = useCommentModal();
   const { openCommentsModal } = useCommentModal();
-  const userId = curretUserId;
+  const { currentUser } = useAuthStore();
+  const userId = currentUser?.uid;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export default function Posts() {
                 ...prev,
                 [post.userId]: {
                   name: userData.name || "Unknown User",
-                  imgUrl: userData.imgUrl || "/default-avatar.jpg",
+                  imgUrl: userData.imgUrl || null, // Ensure null is handled correctly
                 },
               }));
             }
@@ -67,7 +69,6 @@ export default function Posts() {
         const commentsRef = collection(db, `posts/${post.documentId}/comments`);
         const likesRef = collection(db, `posts/${post.documentId}/likes`);
 
-        // Comments listener
         const unsubscribeComments = onSnapshot(
           commentsRef,
           (commentSnapshot) => {
@@ -78,7 +79,6 @@ export default function Posts() {
           }
         );
 
-        // Likes listener
         const unsubscribeLikes = onSnapshot(likesRef, (likeSnapshot) => {
           setLikesCount((prevLikes) => ({
             ...prevLikes,
@@ -103,6 +103,10 @@ export default function Posts() {
   }, [userId, users, openCommentsModal]);
 
   const handleLike = async (postId) => {
+    if (!userId) {
+      console.warn("User not logged in, cannot like post.");
+      return;
+    }
     const likeRef = doc(db, `posts/${postId}/likes/${userId}`);
     const alreadyLiked = userLikedPosts[postId];
 
@@ -131,7 +135,7 @@ export default function Posts() {
       {posts.map((el) => {
         const userInfo = users[el.userId] || {
           name: "Unknown User",
-          imgUrl: "/default-avatar.jpg",
+          imgUrl: null, // Set default imgUrl to null for easier checking
         };
 
         return (
@@ -145,7 +149,11 @@ export default function Posts() {
                 style={{ cursor: "pointer" }}
                 onClick={() => goToUserProfile(el.userId)}
               >
-                <img src={userInfo.imgUrl} alt="" />
+                {userInfo.imgUrl ? (
+                  <img src={userInfo.imgUrl} alt="" />
+                ) : (
+                  <FaUserCircle className="fs-3" />
+                )}
                 <h6>{userInfo.name}</h6>
               </div>
 
@@ -168,6 +176,7 @@ export default function Posts() {
                   color: userLikedPosts[el.documentId] ? "#0566ff" : "black",
                 }}
                 onClick={() => handleLike(el.documentId)}
+                disabled={!userId}
               >
                 <BiSolidLike
                   style={{

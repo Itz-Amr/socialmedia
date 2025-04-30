@@ -2,9 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import { IoEarth, IoHeart, IoLocation, IoSchool } from "react-icons/io5";
 import styles from "./index.module.css";
 import LoadingModal from "../../../../Components/Loading Modal";
-import { curretUserId, useEditUserInfoModal } from "../../../../Store";
+import { useEditUserInfoModal } from "../../../../Store"; // Import useAuthStore
 import { usersRepo } from "../../../../Data/Apis/show_users";
 import EditUserInfoModal from "../../../../Components/EditUserInfoModal";
+import { useAuthStore } from "../../../../Store/authStore";
 
 export default function UserInfo({ profileUserId }) {
   const { isOpen, openModal, closeModal, updatedUserInfo } =
@@ -15,7 +16,8 @@ export default function UserInfo({ profileUserId }) {
     from: "",
     livesIn: "",
   });
-  const currentLoggedInUserId = curretUserId;
+  const { currentUser } = useAuthStore(); // Get the current user
+  const currentLoggedInUserId = currentUser?.uid; // Safely access the uid
 
   const fetchUserData = useCallback((userId) => {
     let isMounted = true;
@@ -71,7 +73,7 @@ export default function UserInfo({ profileUserId }) {
         id={styles.info}
       >
         <h6 className="m-0 fw-bold">Basic info</h6>
-        {profileUserId === currentLoggedInUserId && (
+        {profileUserId === currentLoggedInUserId && ( // Use currentUser.uid for comparison
           <button className={styles.editBtn} onClick={handleEdit}>
             Edit
           </button>

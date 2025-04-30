@@ -3,43 +3,87 @@ import styles from "./index.module.css";
 import * as Yup from "yup";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useState } from "react";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import Swal from "sweetalert2";
+import { useAuthStore } from "../../Store/authStore";
 
 export default function Login() {
   const [showPass, setShowPass] = useState(false);
   const navigate = useNavigate();
   const auth = getAuth();
+  const { currentUser, loading } = useAuthStore(); // Get current authenticated user and loading state
 
-  const handleSubmite = (values) => {
-    signInWithEmailAndPassword(auth, values.email, values.password)
-      .then((userCredential) => {
-        navigate("/");
-      })
-      .catch((error) => {
-        let errorMessage = "";
+  // Show loading indicator while auth state is being determined
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-        switch (error.code) {
-          case "auth/user-not-found":
-            errorMessage = "This email is not registered.";
-            break;
-          case "auth/wrong-password":
-            errorMessage = "Incorrect password.";
-            break;
-          case "auth/too-many-requests":
-            errorMessage = "Too many attempts, please try again later.";
-            break;
-          default:
-            errorMessage = "An unexpected error occurred.";
-        }
+  // If user is already logged in, redirect to home page
+  if (currentUser) {
+    console.log("User already logged in, redirecting to home");
+    return <Navigate to="/" replace />;
+  }
 
-        Swal.fire({
-          icon: "error",
-          title: "Email or password is incorrect",
-        });
+  const handleSubmit = async (values) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      );
+      const user = userCredential.user;
+      console.log("User signed in:", user);
+
+      Swal.fire({
+        icon: "success",
+        title: "Signed in successfully!",
+        showConfirmButton: false,
+        timer: 1500,
       });
+
+      navigate("/");
+    } catch (error) {
+      console.error("Error signing in:", error.message);
+
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message,
+      });
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log("User signed in with Google:", user);
+
+      Swal.fire({
+        icon: "success",
+        title: "Signed in with Google!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
+      navigate("/");
+    } catch (error) {
+      console.error("Error with Google sign in:", error.message);
+
+      Swal.fire({
+        icon: "error",
+        title: "Google Sign-In Error",
+        text: error.message,
+      });
+    }
   };
 
   const validationSchema = Yup.object({
@@ -55,11 +99,11 @@ export default function Login() {
       id={styles.container}
     >
       <div>
-        <h1>Welcome Back !</h1>
+        <h1>Welcome Back!</h1>
         <p>Please, Sign in to continue</p>
       </div>
       <Formik
-        onSubmit={handleSubmite}
+        onSubmit={handleSubmit}
         validationSchema={validationSchema}
         initialValues={{ email: "", password: "" }}
       >
@@ -76,7 +120,7 @@ export default function Login() {
             </label>
             <ErrorMessage
               name="email"
-              component={"div"}
+              component="div"
               className={styles.emailMsg}
             />
           </div>
@@ -105,7 +149,7 @@ export default function Login() {
             </label>
             <ErrorMessage
               name="password"
-              component={"div"}
+              component="div"
               className={styles.passwordMsg}
             />
           </div>
@@ -117,12 +161,19 @@ export default function Login() {
           <span className="col-12 text-center">or</span>
 
           <div className="d-flex justify-content-center">
-            <button type="button" className={styles.btn}>
-              <FcGoogle className={styles.googleIcon} /> Sign up with Google
+            <button
+              type="button"
+              className={styles.btn}
+              onClick={handleGoogleSignIn}
+            >
+              <FcGoogle className={styles.googleIcon} /> Sign in with Google
             </button>
           </div>
 
-          <Link className="text-decoration-none col-12 text-center">
+          <Link
+            to="/forgot-password"
+            className="text-decoration-none col-12 text-center"
+          >
             Forgot password?
           </Link>
         </Form>

@@ -1,6 +1,6 @@
 import styles from "./index.module.css";
 import { VscSend } from "react-icons/vsc";
-import { curretUserId, useChat } from "../../../../Store";
+import { useChat } from "../../../../Store"; // Import useAuthStore
 import { useEffect, useRef, useState } from "react";
 import db from "../../../../FireBase";
 import {
@@ -16,6 +16,7 @@ import { RiAddLine } from "react-icons/ri";
 import { FaRegFaceSmile } from "react-icons/fa6";
 import EmojiPicker from "emoji-picker-react";
 import { usersRepo } from "../../../../Data/Repos/users_repo";
+import { useAuthStore } from "../../../../Store/authStore";
 
 export default function MessagesContent() {
   const [msgs, setMsgs] = useState([]);
@@ -23,6 +24,8 @@ export default function MessagesContent() {
   const { chat_id } = useChat();
   const [chatPartner, setChatPartner] = useState(null);
   const inputRef = useRef();
+  const { currentUser } = useAuthStore(); // Get the current user
+  const userId = currentUser?.uid; // Safely access the uid
 
   const handleEnter = (event) => {
     if (event.shiftKey && event.key === "Enter") {
@@ -35,11 +38,11 @@ export default function MessagesContent() {
 
   const sendMsg = async () => {
     const msg = inputRef.current?.value.trim();
-    if (!msg) return;
+    if (!msg || !userId) return; // Ensure message and user ID exist
 
     await addDoc(collection(db, `chats/${chat_id}/messages`), {
       msgContent: msg,
-      userSend: curretUserId,
+      userSend: userId,
       dataAndTime: new Date(),
     });
 
@@ -78,7 +81,7 @@ export default function MessagesContent() {
           const chatData = chatDoc.data();
 
           // Find the other user ID (not the current user)
-          const receiverId = chatData.users.find((id) => id !== curretUserId);
+          const receiverId = chatData.users.find((id) => id !== userId);
 
           if (receiverId) {
             // Get the receiver's user data
@@ -92,7 +95,7 @@ export default function MessagesContent() {
     };
 
     getChatPartnerInfo();
-  }, [chat_id]);
+  }, [chat_id, userId]); // Include userId in dependency array
 
   const handleEmojiClick = (emojiData) => {
     const emoji = emojiData.emoji;
@@ -134,7 +137,7 @@ export default function MessagesContent() {
             <div key={el.documentId} id={styles.msgs}>
               <p
                 className={
-                  el.userSend === curretUserId ? styles.myMsg : styles.otherMsg
+                  el.userSend === userId ? styles.myMsg : styles.otherMsg
                 }
               >
                 {el.msgContent}
@@ -176,7 +179,10 @@ export default function MessagesContent() {
               onKeyDown={handleEnter}
               placeholder="Send a Message"
             />
-            <button className="d-flex align-items-center gap-2">
+            <button
+              className="d-flex align-items-center gap-2"
+              disabled={!userId}
+            >
               Send
               <VscSend className="fs-5" />
             </button>

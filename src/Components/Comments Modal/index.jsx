@@ -1,6 +1,6 @@
 // CommentsModal.jsx
 import { useState, useEffect } from "react";
-import { curretUserId, useCommentModal } from "../../Store";
+import { useCommentModal } from "../../Store"; // Import useAuthStore
 import styles from "./index.module.css";
 import db from "../../FireBase";
 import {
@@ -16,13 +16,15 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import { FaClock, FaRegTrashAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { useAuthStore } from "../../Store/authStore";
 
 export default function CommentsModal() {
   const { closeCommentsModal, selectedPostId } = useCommentModal();
   const [comment, setComment] = useState("");
   const [commentsList, setCommentsList] = useState([]);
   const [commentUsers, setCommentUsers] = useState({});
-  const userId = curretUserId; // Get the current user ID
+  const { currentUser } = useAuthStore(); // Get the current user
+  const userId = currentUser?.uid; // Safely access the uid
 
   // Get Comments
   useEffect(() => {
@@ -172,7 +174,9 @@ export default function CommentsModal() {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
-          <button type="submit">Send</button>
+          <button type="submit" disabled={!userId}>
+            Send
+          </button>
         </form>
       </div>
     </div>

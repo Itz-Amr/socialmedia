@@ -14,10 +14,11 @@ import {
   getDoc,
   orderBy,
 } from "firebase/firestore";
-import { curretUserId, useCommentModal } from "../../../../Store";
+import { useCommentModal } from "../../../../Store"; // Import useAuthStore
 import LoadingModal from "../../../../Components/Loading Modal";
 import db from "../../../../FireBase";
 import CommentsModal from "../../../../Components/Comments Modal";
+import { useAuthStore } from "../../../../Store/authStore";
 
 export default function UserPosts({ profileUserId }) {
   const [posts, setPosts] = useState([]);
@@ -26,8 +27,9 @@ export default function UserPosts({ profileUserId }) {
   const [likesCount, setLikesCount] = useState({});
   const [commentsCount, setCommentsCount] = useState({});
   const [userLikedPosts, setUserLikedPosts] = useState({});
-  const currentLoggedInUserId = curretUserId;
-  const { commentsModal, openCommentsModal } = useCommentModal(); // ✅ Correct destructure
+  const { currentUser } = useAuthStore(); // Get the current user
+  const currentLoggedInUserId = currentUser?.uid; // Safely access the uid
+  const { commentsModal, openCommentsModal } = useCommentModal();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -105,9 +107,14 @@ export default function UserPosts({ profileUserId }) {
     };
 
     fetchData();
-  }, [profileUserId, currentLoggedInUserId]);
+  }, [profileUserId, currentLoggedInUserId]); // Re-run if profileUserId or logged-in user changes
 
   const handleLike = async (postId) => {
+    if (!currentLoggedInUserId) {
+      // Optionally handle the case where the user is not logged in (e.g., show a message)
+      console.warn("User not logged in, cannot like post.");
+      return;
+    }
     const likeRef = doc(db, `posts/${postId}/likes/${currentLoggedInUserId}`);
     const alreadyLiked = userLikedPosts[postId];
 
@@ -119,6 +126,7 @@ export default function UserPosts({ profileUserId }) {
   };
 
   const handleDeletePost = async (postId) => {
+    // You might want to add a check here to ensure only the post owner can delete
     try {
       await deleteDoc(doc(db, "posts", postId));
     } catch (error) {
@@ -170,6 +178,7 @@ export default function UserPosts({ profileUserId }) {
                 color: userLikedPosts[post.documentId] ? "#0566ff" : "black",
               }}
               onClick={() => handleLike(post.documentId)}
+              disabled={!currentLoggedInUserId} // Disable like button if not logged in
             >
               <BiSolidLike
                 style={{

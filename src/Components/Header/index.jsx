@@ -7,15 +7,23 @@ import { Link } from "react-router-dom";
 import logo from "../../assets/Logo/logo-V.png";
 import { useEffect, useState } from "react";
 import { usersRepo } from "../../Data/Repos/users_repo";
-import { curretUserId } from "../../Store";
+import { useAuthStore } from "../../Store/authStore";
+import noImg from "../../assets/no-img-avalabie.jpeg";
 
 export default function Header() {
   const [userData, setUserData] = useState();
+  const { currentUser } = useAuthStore(); // Get the current user
+  const userId = currentUser?.uid; // Safely access the uid
+
   useEffect(() => {
-    usersRepo.getUserData(curretUserId).then((res) => {
-      setUserData(res);
-    });
-  }, []);
+    if (userId) {
+      usersRepo.getUserData(userId).then((res) => {
+        console.log(res);
+
+        setUserData(res);
+      });
+    }
+  }, [userId]); // Fetch user data when userId changes
 
   if (!userData) {
     return null;
@@ -53,7 +61,7 @@ export default function Header() {
         </Link>
 
         <Link to={"/profile"}>
-          <img src={userData.imgUrl || "https://via.placeholder.com/40"} />
+          <img src={userData.imgUrl || noImg} alt="Profile" />
         </Link>
       </div>
     </header>

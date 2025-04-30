@@ -5,30 +5,34 @@ import { IoMdAdd } from "react-icons/io";
 import { useEffect, useRef, useState } from "react";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import db from "../../../../FireBase";
-import { curretUserId } from "../../../../Store";
 import { usersRepo } from "../../../../Data/Repos/users_repo";
+import { useAuthStore } from "../../../../Store/authStore";
 
 export default function AddPost() {
   const [userData, setUserData] = useState(null);
   const textRef = useRef();
+  const { currentUser } = useAuthStore(); // Get the current user
+  const userId = currentUser?.uid; // Safely access the uid
 
   const handleAddPost = async () => {
     const content = textRef.current?.value.trim();
-    if (!content) return;
+    if (!content || !userId) return; // Ensure content and user ID exist
 
     await addDoc(collection(db, "posts"), {
       content,
-      userId: curretUserId,
+      userId: userId,
       dateAndTime: Timestamp.now(),
     });
     textRef.current.value = "";
   };
 
   useEffect(() => {
-    usersRepo.getUserData(curretUserId).then((res) => {
-      setUserData(res);
-    });
-  }, []);
+    if (userId) {
+      usersRepo.getUserData(userId).then((res) => {
+        setUserData(res);
+      });
+    }
+  }, [userId]); // Fetch user data when userId changes
 
   if (!userData) {
     return null;
@@ -54,6 +58,7 @@ export default function AddPost() {
           onClick={handleAddPost}
           className="d-flex align-items-center justify-content-center gap-2"
           id={styles.btn}
+          disabled={!userId} // Disable button if not logged in
         >
           <IoMdAdd className={styles.icon} />
           Add Post

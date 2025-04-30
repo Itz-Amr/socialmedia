@@ -1,13 +1,14 @@
 import styles from "./index.module.css";
 import { useParams } from "react-router-dom";
-import { curretUserId } from "../../../Store";
 import UserImageCover from "../Component/User image cover";
 import UserInfo from "../Component/User info";
 import UserPosts from "../Component/User Posts";
+import { useAuthStore } from "../../../Store/authStore";
 
 export default function Profile() {
   const { userId: otherUserId } = useParams();
-  const currentLoggedInUserId = curretUserId;
+  const { currentUser } = useAuthStore(); // Get current authenticated user
+  const currentLoggedInUserId = currentUser.uid;
   const profileUserId = otherUserId || currentLoggedInUserId;
 
   console.log("Profile component rendered. profileUserId:", profileUserId);

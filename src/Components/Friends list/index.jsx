@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 import FriendsChat from "../Friends Chat";
 import styles from "./index.module.css";
-import { curretUserId } from "../../Store";
 import { liveChatRepo } from "../../Data/Repos/live_chat_repo";
+import { useAuthStore } from "../../Store/authStore";
 
 export default function FriendsList() {
   const [chats, setChats] = useState([]);
+  const { currentUser } = useAuthStore(); // Get the current user
+  const userId = currentUser?.uid; // Safely access the uid
 
   useEffect(() => {
-    const unsubscribe = liveChatRepo.subscribeToLiveChats(
-      curretUserId,
-      (data) => {
+    if (userId) {
+      const unsubscribe = liveChatRepo.subscribeToLiveChats(userId, (data) => {
         setChats(data);
-      }
-    );
-
-    return () => unsubscribe();
-  }, []);
+      });
+      return () => unsubscribe();
+    }
+  }, [userId]); // Subscribe to chats when userId changes
 
   return (
     <div className="col-12 h-100 d-flex flex-column p-3" id={styles.parent}>
