@@ -82,4 +82,24 @@ header {
       display: none;
     }
   }
+
+  #dropDown {
+    #friendRequestBtn {
+      font-size: 10px;
+      display: flex !important;
+      flex-direction: row !important;
+    }
+
+    #friendRequest {
+      font-size: 1.5rem;
+    }
+
+    li {
+      a {
+        font-size: 10px;
+        color: black;
+        font-weight: 700;
+      }
+    }
+  }
 }

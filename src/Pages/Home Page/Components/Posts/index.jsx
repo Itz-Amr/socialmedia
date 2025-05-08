@@ -135,7 +135,7 @@ export default function Posts() {
       {posts.map((el) => {
         const userInfo = users[el.userId] || {
           name: "Unknown User",
-          imgUrl: null, // Set default imgUrl to null for easier checking
+          imgUrl: null,
         };
 
         return (
@@ -152,7 +152,7 @@ export default function Posts() {
                 {userInfo.imgUrl ? (
                   <img src={userInfo.imgUrl} alt="" />
                 ) : (
-                  <FaUserCircle className="fs-3" />
+                  <FaUserCircle className="fs-2" />
                 )}
                 <h6>{userInfo.name}</h6>
               </div>
@@ -173,14 +173,16 @@ export default function Posts() {
             <div className="d-flex justify-content-between">
               <button
                 style={{
-                  color: userLikedPosts[el.documentId] ? "#0566ff" : "black",
+                  color: userLikedPosts[el.documentId] ? "#0566ff" : "#757a91",
                 }}
                 onClick={() => handleLike(el.documentId)}
                 disabled={!userId}
               >
                 <BiSolidLike
                   style={{
-                    color: userLikedPosts[el.documentId] ? "#0566ff" : "black",
+                    color: userLikedPosts[el.documentId]
+                      ? "#0566ff"
+                      : "#757a91",
                   }}
                   className={styles.icon}
                 />

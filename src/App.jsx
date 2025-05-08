@@ -9,9 +9,9 @@ import Profile from "./Pages/Profile Page/UI";
 import Home from "./Pages/Home Page/UI";
 import { ProtectedRoute } from "./Components/Protected Routes/ProtectedRoute";
 import { initializeAuth, useAuthStore } from "./Store/authStore";
+import LoadingModal from "./Components/Loading Modal";
 
 export default function App() {
-  // Initialize auth when the app loads
   useEffect(() => {
     console.log("Initializing auth");
     const cleanup = initializeAuth();
@@ -20,9 +20,8 @@ export default function App() {
 
   const { loading } = useAuthStore();
 
-  // Show a simple loading state while auth is initializing
   if (loading) {
-    return <div>Loading application...</div>;
+    return <LoadingModal />;
   }
 
   return (

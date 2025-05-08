@@ -14,11 +14,12 @@ import {
   getDoc,
   orderBy,
 } from "firebase/firestore";
-import { useCommentModal } from "../../../../Store"; // Import useAuthStore
+import { useCommentModal } from "../../../../Store";
 import LoadingModal from "../../../../Components/Loading Modal";
 import db from "../../../../FireBase";
 import CommentsModal from "../../../../Components/Comments Modal";
 import { useAuthStore } from "../../../../Store/authStore";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function UserPosts({ profileUserId }) {
   const [posts, setPosts] = useState([]);
@@ -27,8 +28,8 @@ export default function UserPosts({ profileUserId }) {
   const [likesCount, setLikesCount] = useState({});
   const [commentsCount, setCommentsCount] = useState({});
   const [userLikedPosts, setUserLikedPosts] = useState({});
-  const { currentUser } = useAuthStore(); // Get the current user
-  const currentLoggedInUserId = currentUser?.uid; // Safely access the uid
+  const { currentUser } = useAuthStore();
+  const currentLoggedInUserId = currentUser?.uid;
   const { commentsModal, openCommentsModal } = useCommentModal();
 
   useEffect(() => {
@@ -107,11 +108,10 @@ export default function UserPosts({ profileUserId }) {
     };
 
     fetchData();
-  }, [profileUserId, currentLoggedInUserId]); // Re-run if profileUserId or logged-in user changes
+  }, [profileUserId, currentLoggedInUserId]);
 
   const handleLike = async (postId) => {
     if (!currentLoggedInUserId) {
-      // Optionally handle the case where the user is not logged in (e.g., show a message)
       console.warn("User not logged in, cannot like post.");
       return;
     }
@@ -126,7 +126,6 @@ export default function UserPosts({ profileUserId }) {
   };
 
   const handleDeletePost = async (postId) => {
-    // You might want to add a check here to ensure only the post owner can delete
     try {
       await deleteDoc(doc(db, "posts", postId));
     } catch (error) {
@@ -159,13 +158,15 @@ export default function UserPosts({ profileUserId }) {
         >
           <div className="d-flex align-items-center justify-content-between">
             <div className="d-flex align-items-center gap-2">
-              <img src={userData?.imgUrl || "/default-avatar.jpg"} alt="" />
+              {userData.imgUrl ? (
+                <img src={userData?.imgUrl} alt="" />
+              ) : (
+                <FaUserCircle className="fs-2" />
+              )}
               <h5 className="m-0 fw-bold">
                 {userData?.name || "Unknown User"}
               </h5>
             </div>
-
-            {/* Optional delete button if needed */}
           </div>
 
           <div className={styles.content}>
@@ -175,14 +176,16 @@ export default function UserPosts({ profileUserId }) {
           <div className="d-flex justify-content-between">
             <button
               style={{
-                color: userLikedPosts[post.documentId] ? "#0566ff" : "black",
+                color: userLikedPosts[post.documentId] ? "#0566ff" : "#757a91",
               }}
               onClick={() => handleLike(post.documentId)}
-              disabled={!currentLoggedInUserId} // Disable like button if not logged in
+              disabled={!currentLoggedInUserId}
             >
               <BiSolidLike
                 style={{
-                  color: userLikedPosts[post.documentId] ? "#0566ff" : "black",
+                  color: userLikedPosts[post.documentId]
+                    ? "#0566ff"
+                    : "#757a91",
                 }}
                 className={styles.icon}
               />

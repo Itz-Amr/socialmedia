@@ -16,6 +16,7 @@ import Swal from "sweetalert2";
 import { useAuthStore } from "../../Store/authStore";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import db from "../../FireBase";
+import LoadingModal from "../../Components/Loading Modal";
 
 export default function Register() {
   const [showPass, setShowPass] = useState(false);
@@ -24,7 +25,11 @@ export default function Register() {
   const { loading } = useAuthStore();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <LoadingModal />
+      </div>
+    );
   }
 
   const handleRegister = async (values) => {
@@ -147,7 +152,6 @@ export default function Register() {
         }}
       >
         <Form className="col-6 p-3 bg-white shadow rounded d-flex flex-column justify-content-center gap-4">
-          {/* ... (rest of your form fields - username, email, password, confirmPassword) */}
           <div className={styles.inputContainer}>
             <Field
               name="username"
@@ -161,7 +165,7 @@ export default function Register() {
             <ErrorMessage
               name="username"
               component="div"
-              className={styles.emailMsg} // Or a more specific class
+              className={styles.emailMsg}
             />
           </div>
 
@@ -214,13 +218,11 @@ export default function Register() {
             {showPass ? (
               <FaEye
                 className={styles.eyeIcon}
-                style={{ top: "18px", right: "45px" }}
                 onClick={() => setShowPass(false)}
               />
             ) : (
               <FaEyeSlash
                 className={styles.eyeIcon}
-                style={{ top: "18px", right: "45px" }}
                 onClick={() => setShowPass(true)}
               />
             )}
@@ -243,18 +245,6 @@ export default function Register() {
           <button type="submit" className={styles.signInBtn}>
             Sign Up
           </button>
-
-          <span className="col-12 text-center">or</span>
-
-          <div className="d-flex justify-content-center">
-            <button
-              type="button"
-              className={styles.btn}
-              onClick={handleGoogleSignIn}
-            >
-              <FcGoogle className={styles.googleIcon} /> Sign up with Google
-            </button>
-          </div>
 
           <p className="col-12 text-center">
             Already have an account?{" "}

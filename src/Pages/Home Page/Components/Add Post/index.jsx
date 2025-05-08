@@ -7,16 +7,17 @@ import { addDoc, collection, Timestamp } from "firebase/firestore";
 import db from "../../../../FireBase";
 import { usersRepo } from "../../../../Data/Repos/users_repo";
 import { useAuthStore } from "../../../../Store/authStore";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function AddPost() {
   const [userData, setUserData] = useState(null);
   const textRef = useRef();
-  const { currentUser } = useAuthStore(); // Get the current user
-  const userId = currentUser?.uid; // Safely access the uid
+  const { currentUser } = useAuthStore();
+  const userId = currentUser?.uid;
 
   const handleAddPost = async () => {
     const content = textRef.current?.value.trim();
-    if (!content || !userId) return; // Ensure content and user ID exist
+    if (!content || !userId) return;
 
     await addDoc(collection(db, "posts"), {
       content,
@@ -32,7 +33,7 @@ export default function AddPost() {
         setUserData(res);
       });
     }
-  }, [userId]); // Fetch user data when userId changes
+  }, [userId]);
 
   if (!userData) {
     return null;
@@ -49,8 +50,14 @@ export default function AddPost() {
       </div>
 
       <div id={styles.textArea}>
-        <img src={userData.imgUrl} alt="" />
-        <textarea ref={textRef} placeholder="Write Somthing About You" />
+        <div className={styles.userAvatar}>
+          {userData.imgUrl ? (
+            <img src={userData.imgUrl} alt="" />
+          ) : (
+            <FaUserCircle className="fs-2" />
+          )}
+        </div>
+        <textarea ref={textRef} placeholder="Write Something About You" />
       </div>
 
       <div className="col-12 d-flex gap-3 align-items-center justify-content-around">
@@ -58,7 +65,7 @@ export default function AddPost() {
           onClick={handleAddPost}
           className="d-flex align-items-center justify-content-center gap-2"
           id={styles.btn}
-          disabled={!userId} // Disable button if not logged in
+          disabled={!userId}
         >
           <IoMdAdd className={styles.icon} />
           Add Post

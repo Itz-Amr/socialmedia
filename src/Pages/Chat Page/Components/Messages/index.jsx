@@ -1,17 +1,18 @@
+import React, { useEffect, useState, useCallback } from "react";
 import styles from "./index.module.css";
-import noImg from "../../../../assets/no-img-avalabie.jpeg";
 import FriendsList from "../../../../Components/Friends list";
 import { Link } from "react-router-dom";
-import { usersRepo } from "../../../../Data/Repos/users_repo";
-import { useEffect, useState } from "react";
 import LoadingModal from "../../../../Components/Loading Modal";
 import { IoMdClose } from "react-icons/io";
 import { useAuthStore } from "../../../../Store/authStore";
+import { usersRepo } from "../../../../Data/Apis/show_users";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function Messages() {
   const [userData, setUserData] = useState(null);
-  const { currentUser } = useAuthStore(); // Get the current user
-  const userId = currentUser?.uid; // Safely access the uid
+  const { currentUser } = useAuthStore();
+  const userId = currentUser?.uid;
+  const [refreshFriends, setRefreshFriends] = useState(false);
 
   useEffect(() => {
     if (userId) {
@@ -19,13 +20,21 @@ export default function Messages() {
         setUserData(res);
       });
     }
-  }, [userId]); // Fetch user data when userId changes
+  }, [userId]);
+
+  const handleFriendAccepted = useCallback(() => {
+    setRefreshFriends((prev) => !prev);
+  }, []);
 
   return userData ? (
     <div className="p-3 d-flex flex-column" id={styles.parnet}>
       <header className="d-flex align-items-center justify-content-between">
         <div className="d-flex align-items-center gap-2">
-          <img src={userData.imgUrl || noImg} alt="" />
+          {userData.imgUrl ? (
+            <img src={userData.imgUrl} alt="" />
+          ) : (
+            <FaUserCircle className="fs-2" />
+          )}
           <h5>{userData.name || "No available name "}</h5>
         </div>
         <Link to={"/"}>

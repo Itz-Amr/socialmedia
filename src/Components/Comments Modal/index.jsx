@@ -1,6 +1,5 @@
-// CommentsModal.jsx
 import { useState, useEffect } from "react";
-import { useCommentModal } from "../../Store"; // Import useAuthStore
+import { useCommentModal } from "../../Store";
 import styles from "./index.module.css";
 import db from "../../FireBase";
 import {
@@ -14,7 +13,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { formatDistanceToNow } from "date-fns";
-import { FaClock, FaRegTrashAlt } from "react-icons/fa";
+import { FaClock, FaRegTrashAlt, FaUserCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { useAuthStore } from "../../Store/authStore";
 
@@ -23,10 +22,9 @@ export default function CommentsModal() {
   const [comment, setComment] = useState("");
   const [commentsList, setCommentsList] = useState([]);
   const [commentUsers, setCommentUsers] = useState({});
-  const { currentUser } = useAuthStore(); // Get the current user
-  const userId = currentUser?.uid; // Safely access the uid
+  const { currentUser } = useAuthStore();
+  const userId = currentUser?.uid;
 
-  // Get Comments
   useEffect(() => {
     if (!selectedPostId) return;
 
@@ -52,7 +50,7 @@ export default function CommentsModal() {
                 ...prevUsers,
                 [comment.userId]: {
                   name: userData.name || "Unknown User",
-                  imgUrl: userData.imgUrl || "/default-avatar.jpg",
+                  imgUrl: userData.imgUrl || "",
                 },
               }));
             }
@@ -94,7 +92,7 @@ export default function CommentsModal() {
 
     const result = await Swal.fire({
       title: "Are you sure?",
-      text: "You won’t be able to revert this!",
+      text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes, delete it!",
@@ -128,7 +126,7 @@ export default function CommentsModal() {
             commentsList.map((el) => {
               const commenterInfo = commentUsers[el.userId] || {
                 name: "Unknown User",
-                imgUrl: "/default-avatar.jpg",
+                imgUrl: "",
               };
               return (
                 <div
@@ -137,7 +135,11 @@ export default function CommentsModal() {
                 >
                   <div className="d-flex py-3 justify-content-between align-items-center position-relative">
                     <div className="d-flex align-items-center gap-2">
-                      <img src={commenterInfo.imgUrl} alt="" />
+                      {commenterInfo.imgUrl ? (
+                        <img src={commenterInfo.imgUrl} alt="" />
+                      ) : (
+                        <FaUserCircle size={24} />
+                      )}
                       <strong>{commenterInfo.name}</strong>
                     </div>
                     {el.userId === userId && (

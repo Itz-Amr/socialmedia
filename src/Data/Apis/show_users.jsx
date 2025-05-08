@@ -5,6 +5,8 @@ import {
   doc,
   getDoc,
   updateDoc,
+  writeBatch,
+  deleteField,
 } from "firebase/firestore";
 import db from "../../FireBase";
 
@@ -31,6 +33,9 @@ export const showUser = async (userId) => {
       marriedTo: userData.data()?.marriedTo,
       from: userData.data()?.from,
       livesIn: userData.data()?.livesIn,
+      friendRequestsReceived: userData.data()?.friendRequestsReceived || {},
+      friendRequestsSent: userData.data()?.friendRequestsSent || {},
+      friends: userData.data()?.friends || {},
     };
   } else {
     console.log("No such document!");
@@ -62,6 +67,100 @@ const updateUserData = async (userId, updatedData) => {
   }
 };
 
+const sendFriendRequest = async (currentUserId, receiverId) => {
+  try {
+    const currentUserRef = doc(db, "users", currentUserId);
+    const receiverRef = doc(db, "users", receiverId);
+    const batch = writeBatch(db);
+
+    batch.update(currentUserRef, {
+      [`friendRequestsSent.${receiverId}`]: true,
+    });
+
+    batch.update(receiverRef, {
+      [`friendRequestsReceived.${currentUserId}`]: true,
+    });
+
+    await batch.commit();
+    console.log("Friend request sent successfully");
+    return true;
+  } catch (error) {
+    console.error("Error sending friend request:", error);
+    throw error;
+  }
+};
+
+const cancelFriendRequest = async (currentUserId, receiverId) => {
+  try {
+    const currentUserRef = doc(db, "users", currentUserId);
+    const receiverRef = doc(db, "users", receiverId);
+    const batch = writeBatch(db);
+
+    batch.update(currentUserRef, {
+      [`friendRequestsSent.${receiverId}`]: deleteField(),
+    });
+
+    batch.update(receiverRef, {
+      [`friendRequestsReceived.${currentUserId}`]: deleteField(),
+    });
+
+    await batch.commit();
+    console.log("Friend request cancelled successfully");
+    return true;
+  } catch (error) {
+    console.error("Error cancelling friend request:", error);
+    throw error;
+  }
+};
+
+const acceptFriendRequest = async (currentUserId, requesterId) => {
+  try {
+    const currentUserRef = doc(db, "users", currentUserId);
+    const requesterRef = doc(db, "users", requesterId);
+    const batch = writeBatch(db);
+
+    batch.update(currentUserRef, {
+      [`friends.${requesterId}`]: true,
+      [`friendRequestsReceived.${requesterId}`]: deleteField(),
+    });
+
+    batch.update(requesterRef, {
+      [`friends.${currentUserId}`]: true,
+      [`friendRequestsSent.${currentUserId}`]: deleteField(),
+    });
+
+    await batch.commit();
+    console.log("Friend request accepted successfully.");
+    return true;
+  } catch (error) {
+    console.error("Error accepting friend request:", error);
+    throw error;
+  }
+};
+
+const rejectFriendRequest = async (currentUserId, requesterId) => {
+  try {
+    const currentUserRef = doc(db, "users", currentUserId);
+    const requesterRef = doc(db, "users", requesterId);
+    const batch = writeBatch(db);
+
+    batch.update(currentUserRef, {
+      [`friendRequestsReceived.${requesterId}`]: deleteField(),
+    });
+
+    batch.update(requesterRef, {
+      [`friendRequestsSent.${currentUserId}`]: deleteField(),
+    });
+
+    await batch.commit();
+    console.log("Friend request rejected successfully.");
+    return true;
+  } catch (error) {
+    console.error("Error rejecting friend request:", error);
+    throw error;
+  }
+};
+
 export const usersRepo = {
   getAllUsers: async () => {
     return await indexUsers();
@@ -69,5 +168,9 @@ export const usersRepo = {
   getUserData: async (userId) => {
     return await showUser(userId);
   },
-  updateUserData: updateUserData, // ADDED THIS FUNCTION TO THE EXPORTS
+  updateUserData: updateUserData,
+  sendFriendRequest: sendFriendRequest,
+  cancelFriendRequest: cancelFriendRequest,
+  acceptFriendRequest: acceptFriendRequest,
+  rejectFriendRequest: rejectFriendRequest,
 };

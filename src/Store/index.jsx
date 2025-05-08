@@ -1,11 +1,4 @@
-import { FiMessageSquare } from "react-icons/fi";
-import { GoPersonAdd } from "react-icons/go";
-import { LiaBellSolid, LiaHomeSolid } from "react-icons/lia";
-import { RiGroupLine, RiUser3Line } from "react-icons/ri";
 import { create } from "zustand";
-
-// Remove the hardcoded currentUserId
-// export const curretUserId = "1";
 
 export const useUserStore = create((set) => ({
   users: {},
@@ -50,4 +43,11 @@ export const useEditUserInfoModal = create((set) => ({
   closeModal: () => set({ isOpen: false }),
 
   updateUserInfo: (newUserInfo) => set({ updatedUserInfo: newUserInfo }),
+}));
+
+export const useFriendsModal = create((set) => ({
+  isFriendsListOpen: false,
+
+  openFriendList: () => set({ isFriendsListOpen: true }),
+  closeFriendList: () => set({ isFriendsListOpen: false }),
 }));
