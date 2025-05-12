@@ -11,8 +11,6 @@ export default function Profile() {
   const currentLoggedInUserId = currentUser.uid;
   const profileUserId = otherUserId || currentLoggedInUserId;
 
-  console.log("Profile component rendered. profileUserId:", profileUserId);
-
   return (
     <div className="col-12 py-3 px-5 overflow-auto" id={styles.body}>
       <UserImageCover profileUserId={profileUserId} />

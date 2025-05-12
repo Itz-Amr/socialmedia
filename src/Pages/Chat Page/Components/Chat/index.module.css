@@ -104,4 +104,8 @@
     @media screen {
     }
   }
+
+  #chatIcon {
+    cursor: pointer;
+  }
 }

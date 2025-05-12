@@ -100,11 +100,19 @@
   outline: none;
   transition: all 0.3s ease;
   box-sizing: border-box;
+
+  @media screen and(max-width : 435px) {
+    font-size: 10px !important;
+  }
 }
 
 .inputBar::placeholder {
   color: grey;
   transition: all 0.3s ease;
+
+  @media screen and(max-width: 435px) {
+    font-size: 10px !important;
+  }
 }
 
 .inputLabel {
@@ -116,6 +124,10 @@
   color: grey;
   pointer-events: none;
   transition: all 0.3s ease;
+
+  @media screen and (max-width: 767px) {
+    font-size: 10px;
+  }
 }
 
 .inputBar:focus + .inputLabel,

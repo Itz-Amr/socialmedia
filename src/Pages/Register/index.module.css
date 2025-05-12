@@ -87,7 +87,6 @@
 
 .signUp {
   text-decoration: none;
-  color: inherit; /* Or a specific color */
   font-weight: 600;
 }
 
@@ -127,6 +126,10 @@
   color: grey;
   pointer-events: none;
   transition: all 0.3s ease;
+
+  @media screen and (max-width: 767px) {
+    font-size: 10px;
+  }
 }
 
 .inputBar:focus + .inputLabel,

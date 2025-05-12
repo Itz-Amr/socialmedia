@@ -95,7 +95,7 @@ export default function MessagesContent() {
     };
 
     getChatPartnerInfo();
-  }, [chat_id, userId]); // Include userId in dependency array
+  }, [chat_id, userId]);
 
   const handleEmojiClick = (emojiData) => {
     const emoji = emojiData.emoji;
@@ -115,17 +115,24 @@ export default function MessagesContent() {
   const { openFriendList } = useFriendsModal();
 
   if (!chat_id) {
+    const { openFriendList } = useFriendsModal();
     return (
       <div
         className="flex-grow-1 d-flex flex-column justify-content-center align-items-center"
         id={styles.parnet}
       >
+        <FiMessageSquare
+          className="fs-4 d-lg-none d-sm-block d-md-none"
+          id={styles.chatIcon}
+          onClick={openFriendList}
+        />
         <div className="text-center">
           <h6>Select a chat to start messaging</h6>
           <p className="text-muted">
             Choose a friend from the list to begin your conversation
           </p>
         </div>
+
         <Outlet />
       </div>
     );
@@ -139,7 +146,6 @@ export default function MessagesContent() {
     >
       <MessagesModal />
 
-      {/* Header with chat partner info */}
       {chatPartner && (
         <header className="p-3 d-flex justify-content-between">
           <div className="d-flex align-items-center gap-2">
@@ -152,8 +158,9 @@ export default function MessagesContent() {
           </div>
 
           <FiMessageSquare
-            className="fs-4 d-lg-none d-sm-block d-md-none"
             onClick={openFriendList}
+            id={styles.chatIcon}
+            className="fs-4 d-lg-none d-sm-block "
           />
         </header>
       )}
